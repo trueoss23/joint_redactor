@@ -6,9 +6,6 @@ from di_container import di
 
 @pytest.fixture(scope='function')
 def db_mem():
-    # di.db = DbInMemory()
-    # print('??di', di.db)
     di.db.seed()
-    print('??di', di.db)
-
     yield di
+    di.db.seed()
