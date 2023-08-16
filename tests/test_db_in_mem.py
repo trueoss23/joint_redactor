@@ -14,7 +14,6 @@ client = TestClient(app=app)
 def test_read_files_succes_empty_db():
     response = client.get('/editor/files')
     data = json.loads(response.content)
-    print(data)
     assert response.status_code == status.HTTP_200_OK
     assert type(data) == list
     assert len(data) == 0
@@ -125,9 +124,17 @@ def test_update_line_NoDateForUpdate_304(db_mem):
     assert response.status_code == status.HTTP_304_NOT_MODIFIED
 
 
-def test_delete_line_succes(db_mem):
-    response = client.delete(f'editor/{c.filename1}/{c.num_line1}')
+def test_lock_line_succes(db_mem):
+    response = client.patch(f'editor/{c.filename1}/{c.num_line1}/lock')
     assert response.status_code == status.HTTP_200_OK
+
+
+def test_delete_line_succes(db_mem):
+    response1 = client.patch(f'editor/{c.filename1}/{c.num_line1}/lock')
+    response2 = client.delete(f'editor/{c.filename1}/{c.num_line1}')
+
+    assert response1.status_code == status.HTTP_200_OK
+    assert response2.status_code == status.HTTP_200_OK
 
 
 def test_delete_line_NoFilenameInDb_404(db_mem):

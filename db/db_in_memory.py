@@ -1,8 +1,10 @@
 import copy
+from datetime import datetime
 
 from .db_interface import DbInterface
 from dto.file import FileData, LineFile
-from common.exceptions import NoFilenameInDb, FilenameAlreadyExists, ErrorNumLine, NoDateForUpdate
+from common.exceptions import NoFilenameInDb, FilenameAlreadyExists
+from common.exceptions import ErrorNumLine, NoDateForUpdate
 import tests.constants as c
 
 
@@ -41,7 +43,7 @@ class DbInMemory(DbInterface):
         self.db[filename].data.append(line)
         return len(self.db[filename].data) - 1
 
-    def update_line(self, filename: str, num_line: int, new_line: str):
+    def update_line(self, filename: str, num_line: int, new_line: LineFile):
         if filename not in self.db:
             raise NoFilenameInDb(f'no {filename} in db')
         if len(self.db[filename].data) < num_line:
@@ -49,6 +51,27 @@ class DbInMemory(DbInterface):
         if self.db[filename].data[num_line] == new_line:
             raise NoDateForUpdate
         self.db[filename].data[num_line] = new_line
+        self.db[filename].data[num_line].released_at = datetime.now()
+
+    def lock_line(self, filename: str, num_line: int):
+        if filename not in self.db:
+            raise NoFilenameInDb(f'no {filename} in db')
+        if len(self.db[filename].data) < num_line:
+            raise ErrorNumLine(f'no {num_line} line in {filename}')
+        if self.db[filename].data[num_line].is_locked_by:
+            raise NoDateForUpdate
+        self.db[filename].data[num_line].is_locked_by = True
+        self.db[filename].data[num_line].released_at = datetime.now()
+
+    def unlock_line(self, filename: str, num_line: int):
+        if filename not in self.db:
+            raise NoFilenameInDb(f'no {filename} in db')
+        if len(self.db[filename].data) < num_line:
+            raise ErrorNumLine(f'no {num_line} line in {filename}')
+        if not self.db[filename].data[num_line].is_locked_by:
+            raise NoDateForUpdate
+        self.db[filename].data[num_line].is_locked_by = True
+        self.db[filename].data[num_line].released_at = datetime.now()
 
     def delete_line(self, filename: str, num_line: int):
         if filename not in self.db:

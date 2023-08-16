@@ -1,7 +1,7 @@
 from dto.file import FileData
-from common.tools import get_list_line_from_file
+from common.tools import get_list_line_from_file, get_dict_lines_from_file
 
-
+# Mem
 line1 = '123'
 line2 = '456'
 line3 = '789'
@@ -18,3 +18,7 @@ file2 = FileData(name=filename2, data=lines2)
 
 num_line1 = 0
 num_line_not_exists = 3
+
+# MYSQL
+
+file2_id = 2
