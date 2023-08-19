@@ -8,3 +8,8 @@ class FilenameAlreadyExists(Exception):
 
 class ErrorNumLine(Exception):
     pass
+
+
+class NoDateForUpdate(Exception):
+    pass
+

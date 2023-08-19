@@ -4,7 +4,7 @@ from dto.file import FileData
 
 class DbInterface(ABC):
     @abstractclassmethod
-    def seed(seld):
+    def seed(self):
         pass
 
     @abstractclassmethod
