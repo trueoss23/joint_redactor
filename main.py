@@ -10,5 +10,6 @@ settings = get_settings()
 app = FastAPI(title=settings.app_name)
 app.include_router(editor_router, tags=['editor'])
 
+
 if __name__ == '__main__':
-    uvicorn.run("main:app", host="127.0.0.1", port=settings.app_port, reload=True)
+    uvicorn.run("main:app", host=settings.app_host, port=settings.app_port, reload=True)

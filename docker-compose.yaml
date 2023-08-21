@@ -1,25 +1,28 @@
 version: "3"
 services:
   app:
+    container_name: fastapi_app
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8001"
+    env_file:
+      ./.env
     depends_on:
       - db
+    command: ./wait-for-it.sh mysql:3306 -- python3 -m pytest -s --cov --cov-report=term-missing
+
     networks:
       my_network:
         ipv4_address: 172.29.0.2
   db:
     image: mysql:5.7
+    container_name: db
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_DATABASE: 'files'
-      MYSQL_USER: 'root'
-      MYSQL_PASSWORD: 'qwe'
-      MYSQL_ROOT_PASSWORD: 'qwe'
+    env_file:
+      ./.env
     networks:
       my_network:
         ipv4_address: 172.29.0.3
@@ -29,4 +32,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.29.0.0/16
+        - subnet: 172.29.0.0/24
