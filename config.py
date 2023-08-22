@@ -12,6 +12,7 @@ load_dotenv()
 class Settings(BaseModel):
     app_name: str = os.getenv("APP_NAME")
     app_port: int = int(os.getenv("APP_PORT"))
+    app_host: int = os.getenv("APP_HOST")
     db_type: DataBaseType = DataBaseType.MYSQL
     db_driver: str = os.getenv('DB_DRIVER')
     db_user: str = os.getenv("DB_USER")
